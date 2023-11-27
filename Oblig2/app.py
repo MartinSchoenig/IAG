@@ -13,7 +13,7 @@ def save_feedback(text, paraphrase, csv_filename='feedback.csv'):
     df.to_csv(csv_filename, index=False)
 
 def paraphrase(text, do_sampling, num_samples):
-    model_dir = './models/outputs_4'
+    model_dir = './models/outputs'
     model = T5ForConditionalGeneration.from_pretrained(model_dir)
     tokenizer = T5TokenizerFast.from_pretrained(model_dir)
     
@@ -24,7 +24,7 @@ def paraphrase(text, do_sampling, num_samples):
     if do_sampling:
         encoded_output = model.generate(
             **tokenized_input,
-            max_length=1000,
+            max_length=256,
             num_return_sequences=num_samples,
             do_sample=True,
             top_k=120,
@@ -33,7 +33,7 @@ def paraphrase(text, do_sampling, num_samples):
         paraphrased_text = [tokenizer.decode(tokenized_output, skip_special_tokens=True) for tokenized_output in encoded_output]
         return paraphrased_text
     else:
-        encoded_output = model.generate(**tokenized_input, max_length=1000)[0]
+        encoded_output = model.generate(**tokenized_input, max_length=256)[0]
         paraphrased_text = tokenizer.decode(encoded_output, skip_special_tokens=True)
         return paraphrased_text
 
